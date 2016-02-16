@@ -1,2 +1,11 @@
 # ID-28-Blob-Attack
-Blob ATTACK is a game with a nod to Puyo Pop Fever. In this one player puzzler you’ll have to clear the field of all the dropping blobs. Each blob-duo consists out of 2 blobs. The game has 5 different blobs, randomly linked together. Try to score as high as possible, by making groups and chain reactions.
+![Image]
+(http://www.team-arg.org/masterfiles/team-arg-blba/images/banner-ID-28c.png)
+
+Blob Attack: http://www.team-arg.org/blba-manual.html  
+Arduboy version 1.5:  http://www.team-arg.org/blba-downloads.html  
+MADE by TEAM a.r.g. : http://www.team-arg.org/more-about.html
+ 
+2015 - Game by JO3RI - All art by CastPixel: https://twitter.com/castpixel
+
+Game License: MIT : https://opensource.org/licenses/MIT
