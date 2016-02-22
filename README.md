@@ -1,4 +1,4 @@
-# ID-28-Blob-Attack
+# Blob Attack
 ![Image]
 (http://www.team-arg.org/masterfiles/team-arg-blba/images/banner-ID-28c.png)
 
