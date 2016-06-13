@@ -1,15 +1,15 @@
 /*
- Blob Attack: http://www.team-arg.org/blba-manual.html
+  Blob Attack: http://www.team-arg.org/blba-manual.html
 
- Arduboy version 1.5:  http://www.team-arg.org/blba-downloads.html
+  Arduboy version 1.5:  http://www.team-arg.org/blba-downloads.html
 
- MADE by TEAM a.r.g. : http://www.team-arg.org/more-about.html
+  MADE by TEAM a.r.g. : http://www.team-arg.org/more-about.html
 
- 2015 - Game by JO3RI - All art by CastPixel: https://twitter.com/castpixel
+  2015 - Game by JO3RI - All art by CastPixel: https://twitter.com/castpixel
 
- Game License: MIT : https://opensource.org/licenses/MIT
+  Game License: MIT : https://opensource.org/licenses/MIT
 
- */
+*/
 
 //determine the game
 #define GAME_ID 28
@@ -99,7 +99,7 @@ byte elfPausedMouthSequence[] = {0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 3, 3, 3, 3, 3, 3,
 byte elfPausedFrame;
 byte elfNormalEyesSequence[] = {0, 1, 2, 3, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
 byte elfNormalFrame;
-byte infoSequence[] = {1,2,3,4,5,4,3,2};
+byte infoSequence[] = {1, 2, 3, 4, 5, 4, 3, 2};
 byte thumbsUpFrame;
 byte chain;
 int currentBlobs[] =
@@ -334,7 +334,8 @@ boolean rightIsSameBlob(int array_x, int array_y)
 
 boolean leftIsSameBlob(int array_x, int array_y)
 {
-  if ((array_x - 1 > 0 ) && (field [array_x][array_y] == field [array_x - 1][array_y])) return true;
+  //if ((array_x - 1 > 0 ) && (field [array_x][array_y] == field [array_x - 1][array_y])) return true;
+  if ((array_x > 0 ) && (field [array_x][array_y] == field [array_x - 1][array_y])) return true;
   else return false;
 }
 
@@ -466,6 +467,8 @@ void fourInPack()
       {
         if (aboveIsSameBlob(column, row) && rightIsSameBlob(column, row) && aboveIsSameBlob(column + 1, row))
         {
+          // XX
+          // XX
           fieldFlags[column][row] = FLAG_ON_FIELD;
           fieldFlags[column][row - 1] = FLAG_ON_FIELD;
           fieldFlags[column + 1][row] = FLAG_ON_FIELD;
@@ -473,6 +476,8 @@ void fourInPack()
         }
         if (rightIsSameBlob(column, row) && aboveIsSameBlob(column + 1, row) && rightIsSameBlob(column + 1, row - 1))
         {
+          //  XX
+          // XX
           fieldFlags[column][row] = FLAG_ON_FIELD;
           fieldFlags[column + 1][row] = FLAG_ON_FIELD;
           fieldFlags[column + 1][row - 1] = FLAG_ON_FIELD;
@@ -480,6 +485,8 @@ void fourInPack()
         }
         if (rightIsSameBlob(column, row) && underIsSameBlob(column + 1, row) && rightIsSameBlob(column + 1, row + 1))
         {
+          // XX
+          //  XX
           fieldFlags[column][row] = FLAG_ON_FIELD;
           fieldFlags[column + 1][row] = FLAG_ON_FIELD;
           fieldFlags[column + 1][row + 1] = FLAG_ON_FIELD;
@@ -487,6 +494,9 @@ void fourInPack()
         }
         if (aboveIsSameBlob(column, row) && rightIsSameBlob(column, row - 1) && aboveIsSameBlob(column + 1, row - 1))
         {
+          //  X
+          // XX
+          // X
           fieldFlags[column][row] = FLAG_ON_FIELD;
           fieldFlags[column][row - 1] = FLAG_ON_FIELD;
           fieldFlags[column + 1][row - 1] = FLAG_ON_FIELD;
@@ -494,6 +504,9 @@ void fourInPack()
         }
         if (aboveIsSameBlob(column, row) && leftIsSameBlob(column, row - 1) && aboveIsSameBlob(column - 1, row - 1))
         {
+          // X
+          // XX
+          //  X
           fieldFlags[column][row] = FLAG_ON_FIELD;
           fieldFlags[column][row - 1] = FLAG_ON_FIELD;
           fieldFlags[column - 1][row - 1] = FLAG_ON_FIELD;
@@ -513,10 +526,18 @@ void fourInColumn()
     {
       if (!isTileFree(column, row))
       {
+
         if (aboveIsSameBlob(column, row) && aboveIsSameBlob(column, row - 1))
         {
+          // X
+          // X
+          // X
           if (aboveIsSameBlob(column, row - 2))
           {
+            // X
+            // X
+            // X
+            // X
             fieldFlags[column][row] = FLAG_ON_FIELD;
             fieldFlags[column][row - 1] = FLAG_ON_FIELD;
             fieldFlags[column][row - 2] = FLAG_ON_FIELD;
@@ -526,6 +547,9 @@ void fourInColumn()
           {
             if (rightIsSameBlob(column, row - temp))
             {
+              // X        // X        // XX
+              // X        // XX       // X
+              // XX       // X        // X
               fieldFlags[column][row] = FLAG_ON_FIELD;
               fieldFlags[column][row - 1] = FLAG_ON_FIELD;
               fieldFlags[column][row - 2] = FLAG_ON_FIELD;
@@ -536,6 +560,9 @@ void fourInColumn()
           {
             if (leftIsSameBlob(column, row - temp))
             {
+              //  X       //  X       // XX
+              //  X       // XX       //  X
+              // XX       //  X       //  X
               fieldFlags[column][row] = FLAG_ON_FIELD;
               fieldFlags[column][row - 1] = FLAG_ON_FIELD;
               fieldFlags[column][row - 2] = FLAG_ON_FIELD;
@@ -560,8 +587,10 @@ void fourInRow()
       {
         if (rightIsSameBlob(column, row) && rightIsSameBlob(column + 1, row))
         {
+          // XXX
           if (rightIsSameBlob(column + 2, row))
           {
+            // XXXX
             fieldFlags[column][row] = FLAG_ON_FIELD;
             fieldFlags[column + 1][row] = FLAG_ON_FIELD;
             fieldFlags[column + 2][row] = FLAG_ON_FIELD;
@@ -571,6 +600,8 @@ void fourInRow()
           {
             if (aboveIsSameBlob(column + temp, row))
             {
+              // X        //  X       //   X
+              // XXX      // XXX      // XXX
               fieldFlags[column][row] = FLAG_ON_FIELD;
               fieldFlags[column + 1][row] = FLAG_ON_FIELD;
               fieldFlags[column + 2][row] = FLAG_ON_FIELD;
@@ -581,6 +612,8 @@ void fourInRow()
           {
             if (underIsSameBlob(column + temp, row))
             {
+              // XXX      // XXX      // XXX
+              // X        //  X       //   X
               fieldFlags[column][row] = FLAG_ON_FIELD;
               fieldFlags[column + 1][row] = FLAG_ON_FIELD;
               fieldFlags[column + 2][row] = FLAG_ON_FIELD;
@@ -824,7 +857,7 @@ void updateStage()
       arduboy.drawSprite(56, 13, pause_bitmap, 19, 5, 0, BLACK);
       break;
   }
-  
+
   arduboy.fillRect(53, 52, 47, 9, WHITE);
   scoreDraw(57, 54);
 }
@@ -899,8 +932,8 @@ void drawStressedElf()
 
 void drawPausedElf()
 {
-  arduboy.drawCompressed(50,3+ elfPausedBodySequenceY[elfPausedFrame], elfPauseBodyMask_compressed, WHITE);
-  arduboy.drawCompressed(50,3+ elfPausedBodySequenceY[elfPausedFrame], elfPauseBody_compressed, BLACK);
+  arduboy.drawCompressed(50, 3 + elfPausedBodySequenceY[elfPausedFrame], elfPauseBodyMask_compressed, WHITE);
+  arduboy.drawCompressed(50, 3 + elfPausedBodySequenceY[elfPausedFrame], elfPauseBody_compressed, BLACK);
   arduboy.drawCompressed(elfPausedHeadSequenceX[elfPausedFrame], -elfPausedHeadSequenceY[elfPausedFrame], elfPauseHeadMask_compressed, WHITE);
   arduboy.drawCompressed(elfPausedHeadSequenceX[elfPausedFrame], -elfPausedHeadSequenceY[elfPausedFrame], elfPauseHead_compressed, BLACK);
   arduboy.drawCompressed(elfPausedWandSequenceX[elfPausedFrame], elfPausedWandSequenceY[elfPausedFrame], elfPauseWandMask_compressed, WHITE);
