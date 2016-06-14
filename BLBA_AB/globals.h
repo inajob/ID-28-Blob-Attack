@@ -4,7 +4,6 @@
 #include <Arduino.h>
 #include "Arglib.h"
 #include "bitmaps.h"
-#include "blobs_bitmaps.h"
 
 //define menu states (on main menu)
 #define STATE_MENU_INTRO             0
