@@ -262,9 +262,9 @@ void removeGroups()
     extraScoreForChain += 500;
     chain++;
     if (chain > 1) showCombo = true;
-    arduboy.audio.tone(440, 100);
+    sound.tone(440, 100);
     delay(100);
-    arduboy.audio.tone(1047, 200);
+    sound.tone(1047, 200);
   }
   giveExtraScore = false;
   removeFlag();
@@ -467,7 +467,7 @@ void rotateBlobsRight()
     currentBlobs[3] = currentBlobs[7];
     currentBlobs[7] = currentBlobs[5];
     currentBlobs[5] = temp;
-    arduboy.audio.tone(330, 25);
+    sound.tone(330, 25);
   }
   if (!isMovePossible(blobsXY[0], blobsXY[1]))
   {
@@ -488,7 +488,7 @@ void rotateBlobsLeft()
     currentBlobs[5] = currentBlobs[7];
     currentBlobs[7] = currentBlobs[3];
     currentBlobs[3] = temp;
-    arduboy.audio.tone(330, 25);
+    sound.tone(330, 25);
   }
   if (!isMovePossible(blobsXY[0], blobsXY[1]))
   {
@@ -767,7 +767,7 @@ void dropBlobs()
   if (isMovePossible(blobsXY[0], blobsXY[1] + 1))
   {
     blobsXY[1]++;
-    arduboy.audio.tone(104, 10);
+    sound.tone(104, 10);
     extraScoreForChain = 0;
     chain = 0;
   }

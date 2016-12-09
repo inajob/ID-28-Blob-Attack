@@ -24,7 +24,7 @@ void drawTitleScreen()
 void stateMenuIntro()
 {
   globalCounter++;
-  arduboy.drawCompressed(0, 8, TEAMarg, WHITE);
+  arduboy.drawCompressed(32, 0, TEAMarg, WHITE);
   if (globalCounter > 45) gameState = STATE_MENU_MAIN;
 }
 
