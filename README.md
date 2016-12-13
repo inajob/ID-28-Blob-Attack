@@ -10,6 +10,6 @@ MADE by TEAM a.r.g. : http://www.team-arg.org/more-about.html
 
 Thanks to MLXXXP for his help on switching from ARGlib to Arduboy 2 library
 
-Latest release, source and arduboy file : https://github.com/TEAMarg/ID-28-Blob-Attack/releases/latest
+**Latest release, source and arduboy file :** https://github.com/TEAMarg/ID-28-Blob-Attack/releases/latest
 
 Game License: MIT : https://opensource.org/licenses/MIT
