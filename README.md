@@ -8,6 +8,6 @@ MADE by TEAM a.r.g. : http://www.team-arg.org/more-about.html
  
 2015 - Game by JO3RI - All art by CastPixel: https://twitter.com/castpixel
 
-Thanks to MLXXXP for his help on switching from ARGlib to the Arduboy 2 library
+Thanks to MLXXXp for his help on switching from ARGlib to the Arduboy 2 library
 
 Game License: MIT : https://opensource.org/licenses/MIT
