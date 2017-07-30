@@ -16,16 +16,22 @@ const unsigned char PROGMEM frameSequences[] = {
 
 void drawTitleScreen()
 {
-  if (arduboy.everyXFrames(1)) sequenceFrame++;
-  if (sequenceFrame > 7) sequenceFrame = 0;
-  arduboy.drawCompressed(0, 0, splashScreen_compressed, WHITE);
+  if (arduboy.everyXFrames(5)) sequenceFrame = (++sequenceFrame) % 8;
+  sprites.drawSelfMasked(0, 0, splashScreen, 0);
 }
 
 void stateMenuIntro()
 {
-  globalCounter++;
-  arduboy.drawCompressed(32, 0, TEAMarg, WHITE);
-  if (globalCounter > 45) gameState = STATE_MENU_MAIN;
+  if (globalCounter < 120)
+  {
+    globalCounter++;
+    sprites.drawSelfMasked(34, 4, T_arg, 0);
+  }
+  else
+  {
+    gameState = STATE_MENU_MAIN;
+    globalCounter = 0;
+  }
 }
 
 void stateMenuMain()
@@ -41,17 +47,16 @@ void stateMenuMain()
 
 void stateMenuHelp()
 {
-  arduboy.drawCompressed(32, 0, qrcode_compressed, WHITE);
+  sprites.drawSelfMasked(32, 0, qrcode, 0);
   if (arduboy.justPressed(A_BUTTON | B_BUTTON)) gameState = STATE_MENU_MAIN;
 }
 
 
 void stateMenuInfo()
 {
-  if (arduboy.everyXFrames(2)) sequenceFrame++;
-  if (sequenceFrame > 7)sequenceFrame = 0;
+  if (arduboy.everyXFrames(5)) sequenceFrame = (++sequenceFrame) % 8;
   arduboy.drawCompressed(19, 27, madeBy_compressed, WHITE);
-  arduboy.drawCompressed(5, pgm_read_byte(&frameSequences[sequenceFrame + 16]), gameTitle_compressed, WHITE);
+  sprites.drawSelfMasked(5, pgm_read_byte(&frameSequences[sequenceFrame + 16]), gameTitle, 0);
   if (arduboy.justPressed(A_BUTTON | B_BUTTON)) gameState = STATE_MENU_MAIN;
 }
 
@@ -60,7 +65,7 @@ void stateMenuSoundfx()
   drawTitleScreen();
   sprites.drawPlusMask(61 + (19 * arduboy.audio.enabled()), 52, selectorTwo_plus_mask, 0);
   sprites.drawErase(31, 54, soundMenu, 0);
-  sprites.drawPlusMask(67 + (19 * arduboy.audio.enabled()), 44 - frameSequences[sequenceFrame + 8], bouncingBall_plus_mask, frameSequences[sequenceFrame]);
+  sprites.drawPlusMask(67 + (19 * arduboy.audio.enabled()), 44 - pgm_read_byte(&frameSequences[sequenceFrame + 8]), bouncingBall_plus_mask, pgm_read_byte(&frameSequences[sequenceFrame]));
   if (arduboy.justPressed(RIGHT_BUTTON)) arduboy.audio.on();
   if (arduboy.justPressed(LEFT_BUTTON)) arduboy.audio.off();
   if (arduboy.justPressed(A_BUTTON | B_BUTTON))
