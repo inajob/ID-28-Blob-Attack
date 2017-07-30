@@ -1,7 +1,7 @@
 /*
   Blob Attack: http://www.team-arg.org/blba-manual.html
 
-  Arduboy version 1.7:  http://www.team-arg.org/blba-downloads.html
+  Arduboy version 1.8:  http://www.team-arg.org/blba-downloads.html
 
   MADE by TEAM a.r.g. : http://www.team-arg.org/more-about.html
 

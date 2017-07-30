@@ -28,13 +28,14 @@ void stateMenuPlay()
 
 void stateGamePlaying()
 {
-  if (arduboy.everyXFrames(30))dropBlobs();
+  if (arduboy.everyXFrames(gameSpeed))dropBlobs();
   updateStage();
+  testSpeed();
   if (arduboy.justPressed(RIGHT_BUTTON)) moveBlobsRight();
-  if (arduboy.justPressed(LEFT_BUTTON)) moveBlobsLeft();
-  if (arduboy.justPressed(DOWN_BUTTON)) dropBlobs();
+  else if (arduboy.justPressed(LEFT_BUTTON)) moveBlobsLeft();
+  else if (arduboy.justPressed(DOWN_BUTTON)) dropBlobs();
   if (arduboy.justPressed(B_BUTTON)) rotateBlobsRight();
-  if (arduboy.justPressed(A_BUTTON)) rotateBlobsLeft();
+  else if (arduboy.justPressed(A_BUTTON)) rotateBlobsLeft();
   if (arduboy.justPressed(UP_BUTTON))
   {
     gameState = STATE_GAME_PAUSE;

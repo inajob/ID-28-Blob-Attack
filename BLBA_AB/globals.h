@@ -26,6 +26,7 @@ ArduboyTones sound(arduboy.audio.enabled);
 byte gameState = STATE_MENU_INTRO;   // start the game with the TEAM a.r.g. logo
 byte menuSelection = STATE_MENU_PLAY; // PLAY menu item is pre-selected
 byte globalCounter = 0;
-unsigned long scorePlayer; 
+unsigned long scorePlayer;
+byte gameSpeed;
 
 #endif

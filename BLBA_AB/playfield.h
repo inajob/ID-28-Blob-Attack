@@ -523,7 +523,7 @@ void drawBlobs (int draw_x, int draw_y, int which_blobs)
             int temp = currentBlobs[draw_pointer];
             if (temp > 0)
             {
-              sprites.drawSelfMasked(x,y, animatedBlobs, (4 * temp) + blobFrame);
+              sprites.drawSelfMasked(x, y, animatedBlobs, (4 * temp) + blobFrame);
             }
             draw_pointer++;
           }
@@ -690,16 +690,13 @@ void updateStage()
 {
   if (gameState != STATE_GAME_PAUSE) checkIfBlobsAreGettingToHigh();
   if (showCombo) elfState = ELF_THUMBSUP;
+  if (arduboy.everyXFrames(6)) blobFrame = (++blobFrame) % 4;
   switch (elfState)
   {
     case ELF_NORMAL:
-      if (arduboy.everyXFrames(6)) blobFrame++;
-      if (blobFrame > 3)blobFrame = 0;
       drawNormalElf();
       break;
     case ELF_THUMBSUP:
-      if (arduboy.everyXFrames(6)) blobFrame++;
-      if (blobFrame > 3)blobFrame = 0;
       if (arduboy.everyXFrames(3)) thumbsUpFrame++;
       if (thumbsUpFrame > 7)
       {
@@ -709,10 +706,7 @@ void updateStage()
       drawThumbsUpElf();
       break;
     case ELF_STRESSED:
-      if (arduboy.everyXFrames(3)) blobFrame++;
-      elfStressedFrame++;
-      if (blobFrame > 3)blobFrame = 0;
-      if (elfStressedFrame > 2)elfStressedFrame = 0;
+      if (arduboy.everyXFrames(1))elfStressedFrame = (++elfStressedFrame) % 3;
       drawDitherBackground();
       drawStressedElf();
       break;
@@ -744,6 +738,19 @@ void updateStage()
   scoreDraw(57, 54);
 }
 
+void testSpeed()
+{
+  if (scorePlayer < 2500) gameSpeed = 30;
+  else if (scorePlayer < 5000) gameSpeed = 27;
+  else if (scorePlayer < 7500) gameSpeed = 24;
+  else if (scorePlayer < 10000) gameSpeed = 20;
+  else if (scorePlayer < 25000) gameSpeed = 15;
+  else if (scorePlayer < 50000) gameSpeed = 10;
+  else if (scorePlayer < 100000) gameSpeed = 5;
+  else gameSpeed = 2;
+  Serial.println(gameSpeed);
+}
+
 void deletePossibleBlobs()
 {
   while (canMoveBlobsDown)
@@ -754,7 +761,6 @@ void deletePossibleBlobs()
     fourInRow();
     removeGroups();
     moveBlobsDown();
-    //delay(200);
   }
   canMoveBlobsDown = true;
 }
