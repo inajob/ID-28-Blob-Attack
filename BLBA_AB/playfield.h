@@ -660,12 +660,9 @@ void drawStressedElf()
 
 void drawPausedElf()
 {
-  arduboy.drawCompressed(50, 3 + elfPausedBodySequenceY[elfPausedFrame], elfPauseBodyMask_compressed, WHITE);
-  arduboy.drawCompressed(50, 3 + elfPausedBodySequenceY[elfPausedFrame], elfPauseBody_compressed, BLACK);
-  arduboy.drawCompressed(elfPausedHeadSequenceX[elfPausedFrame], -elfPausedHeadSequenceY[elfPausedFrame], elfPauseHeadMask_compressed, WHITE);
-  sprites.drawSelfMasked(elfPausedHeadSequenceX[elfPausedFrame], -elfPausedHeadSequenceY[elfPausedFrame], elfPauseHead, 0);
-  arduboy.drawCompressed(elfPausedWandSequenceX[elfPausedFrame], elfPausedWandSequenceY[elfPausedFrame], elfPauseWandMask_compressed, WHITE);
-  arduboy.drawCompressed(elfPausedWandSequenceX[elfPausedFrame], elfPausedWandSequenceY[elfPausedFrame], elfPauseWand_compressed, BLACK);
+  sprites.drawPlusMask(51, elfPausedBodySequenceY[elfPausedFrame], elfPauseBody_plus_mask, 0);
+  sprites.drawPlusMask(elfPausedHeadSequenceX[elfPausedFrame], -elfPausedHeadSequenceY[elfPausedFrame], elfPauseHead_plus_mask, 0);
+  sprites.drawPlusMask(elfPausedWandSequenceX[elfPausedFrame], elfPausedWandSequenceY[elfPausedFrame], elfPauseWand_plus_mask, 0);
   sprites.drawErase(elfPausedHeadSequenceX[elfPausedFrame] + 31, -elfPausedHeadSequenceY[elfPausedFrame] + 43, elfPauseMouth, elfPausedMouthSequence[elfPausedFrame]);
 }
 
@@ -706,11 +703,12 @@ void updateStage()
       drawThumbsUpElf();
       break;
     case ELF_STRESSED:
-      if (arduboy.everyXFrames(1))elfStressedFrame = (++elfStressedFrame) % 3;
+      if (arduboy.everyXFrames(3))elfStressedFrame = (++elfStressedFrame) % 3;
       drawDitherBackground();
       drawStressedElf();
       break;
     case ELF_PAUSED:
+      if (arduboy.everyXFrames(6)) elfPausedFrame = (++elfPausedFrame) % 21;
       drawDitherBackground();
       drawPausedElf();
       break;

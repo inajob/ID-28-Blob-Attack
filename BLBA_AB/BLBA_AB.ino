@@ -44,8 +44,6 @@ void loop() {
   arduboy.pollButtons();
   arduboy.clear();
   ((FunctionPointer) pgm_read_word (&mainGameLoop[gameState]))();
-  if (arduboy.everyXFrames(1)) elfPausedFrame++;
-  if (elfPausedFrame > 20)elfPausedFrame = 0;
   arduboy.display();
 }
 
