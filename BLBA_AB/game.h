@@ -18,7 +18,8 @@ void stateMenuPlay()
   canMoveBlobsDown = true;
   showCombo = false;
   showSpeedUp = false;
-  speedState = 
+  currentSpeed = SPEED_STATE_START;
+  previousSpeed = currentSpeed;
   chain = 0;
   elfState = ELF_NORMAL;
   elfStressedFrame = 0;
@@ -30,7 +31,7 @@ void stateMenuPlay()
 
 void stateGamePlaying()
 {
-  if (arduboy.everyXFrames(gameSpeed))dropBlobs();
+  if (arduboy.everyXFrames(currentSpeed) && (!showSpeedUp))dropBlobs();
   updateStage();
   testSpeed();
   if (arduboy.justPressed(RIGHT_BUTTON)) moveBlobsRight();

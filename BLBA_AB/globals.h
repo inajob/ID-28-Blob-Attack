@@ -28,9 +28,6 @@
 #define SPEED_STATE_SIX               20
 #define SPEED_STATE_SEVEN             10
 
-const unsigned char PROGMEM speedSequence[] = {SPEED_STATE_START, SPEED_STATE_ONE, SPEED_STATE_TWO, SPEED_STATE_THREE, SPEED_STATE_FOUR, SPEED_STATE_FIVE, SPEED_STATE_SIX, SPEED_STATE_SEVEN};
-
-
 
 Arduboy2Base arduboy;
 Sprites sprites;
@@ -40,6 +37,8 @@ byte gameState = STATE_MENU_INTRO;   // start the game with the TEAM a.r.g. logo
 byte menuSelection = STATE_MENU_PLAY; // PLAY menu item is pre-selected
 byte globalCounter = 0;
 unsigned long scorePlayer;
-byte gameSpeed;
+byte currentSpeed;
+byte previousSpeed;
+
 
 #endif

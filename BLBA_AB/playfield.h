@@ -30,7 +30,6 @@ boolean canMoveBlobsDown;
 boolean showCombo;
 boolean showSpeedUp;
 byte elfState;
-byte speedState;
 
 unsigned long extraScoreForChain;
 
@@ -41,25 +40,30 @@ int randomBlobPit[6];
 int blobNumbers;
 byte blobFrame;
 
-byte elfStressedBodySequenceY[] = {34, 32, 33};
-byte elfStressedHeadSequenceY[] = {0, 4, 2};
-byte elfStressedWandSequenceX[] = {51, 51, 50};
-byte elfStressedWandSequenceY[] = {26, 24, 26};
+const unsigned char PROGMEM elfStressedBodySequenceY[] = {34, 32, 33};
+const unsigned char PROGMEM elfStressedHeadSequenceY[] = {0, 4, 2};
+const unsigned char PROGMEM elfStressedWandSequenceX[] = {51, 51, 50};
+const unsigned char PROGMEM elfStressedWandSequenceY[] = {26, 24, 26};
 
-byte elfPausedBodySequenceY[] = {38, 37, 37, 37, 37, 37, 37, 38, 40, 41, 42, 42, 42, 42, 42, 42, 42, 42, 41, 40, 39,};
-byte elfPausedHeadSequenceX[] = {50, 50, 50, 50, 50, 50, 50, 50, 51, 51, 52, 52, 52, 52, 52, 52, 52, 51, 51, 50, 50,};
-byte elfPausedHeadSequenceY[] = { 4, 4, 4, 4, 4, 4, 4, 4, 3, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4,};
-byte elfPausedWandSequenceX[] = {100, 100, 100, 100, 100, 100, 100, 101, 100, 99, 98, 97, 97, 97, 97, 97, 97, 97, 97, 98, 99, 100,};
-byte elfPausedWandSequenceY[] = { 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 2, 1, 1, 1, 1, 1, 1, 0, 1, 2, 3,};
-byte elfPausedMouthSequence[] = {0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 4, 3, 2, 2, 5};
+const unsigned char PROGMEM elfPausedBodySequenceY[] = {38, 37, 37, 37, 37, 37, 37, 38, 40, 41, 42, 42, 42, 42, 42, 42, 42, 42, 41, 40, 39,};
+const unsigned char PROGMEM elfPausedHeadSequenceX[] = {50, 50, 50, 50, 50, 50, 50, 50, 51, 51, 52, 52, 52, 52, 52, 52, 52, 51, 51, 50, 50,};
+const unsigned char PROGMEM elfPausedHeadSequenceY[] = { 4, 4, 4, 4, 4, 4, 4, 4, 3, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4,};
+const unsigned char PROGMEM elfPausedWandSequenceX[] = {100, 100, 100, 100, 100, 100, 100, 101, 100, 99, 98, 97, 97, 97, 97, 97, 97, 97, 97, 98, 99, 100,};
+const unsigned char PROGMEM elfPausedWandSequenceY[] = { 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 2, 1, 1, 1, 1, 1, 1, 0, 1, 2, 3,};
+const unsigned char PROGMEM elfPausedMouthSequence[] = {0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 4, 3, 2, 2, 5};
 
-byte thumbsUpSequence[] = {0, 1, 2, 3, 3, 3, 3, 3};
+const unsigned char PROGMEM thumbsUpSequence[] = {0, 1, 2, 3, 3, 3, 3, 3};
 
 const unsigned char PROGMEM elfNormalEyesSequence[] = {0, 1, 2, 3, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
+
+const unsigned char PROGMEM speedSequenceY[] = {0, 6, 12, 14, 16, 14, 16, 16};
+const unsigned char PROGMEM upSequenceY[] = {48, 42, 36, 34, 32, 34, 32, 32};
+
 byte elfStressedFrame;
 byte elfPausedFrame;
 byte elfNormalFrame;
 byte thumbsUpFrame;
+byte speedUpFrame;
 byte chain;
 int currentBlobs[] =
 {
@@ -654,22 +658,22 @@ void drawNormalElf()
 
 void drawStressedElf()
 {
-  sprites.drawPlusMask(58, elfStressedBodySequenceY[elfStressedFrame], elfStressBody_plus_mask, 0);
-  sprites.drawPlusMask(61, - elfStressedHeadSequenceY[elfStressedFrame], elfStressHead_plus_mask, 0);
-  sprites.drawPlusMask(elfStressedWandSequenceX[elfStressedFrame], elfStressedWandSequenceY[elfStressedFrame], elfStressWand_plus_mask, 0);
+  sprites.drawPlusMask(58, pgm_read_byte(&elfStressedBodySequenceY[elfStressedFrame]), elfStressBody_plus_mask, 0);
+  sprites.drawPlusMask(61, - pgm_read_byte(&elfStressedHeadSequenceY[elfStressedFrame]), elfStressHead_plus_mask, 0);
+  sprites.drawPlusMask(pgm_read_byte(&elfStressedWandSequenceX[elfStressedFrame]), pgm_read_byte(&elfStressedWandSequenceY[elfStressedFrame]), elfStressWand_plus_mask, 0);
 }
 
 void drawPausedElf()
 {
-  sprites.drawPlusMask(51, elfPausedBodySequenceY[elfPausedFrame], elfPauseBody_plus_mask, 0);
-  sprites.drawPlusMask(elfPausedHeadSequenceX[elfPausedFrame], -elfPausedHeadSequenceY[elfPausedFrame], elfPauseHead_plus_mask, 0);
-  sprites.drawPlusMask(elfPausedWandSequenceX[elfPausedFrame], elfPausedWandSequenceY[elfPausedFrame], elfPauseWand_plus_mask, 0);
-  sprites.drawErase(elfPausedHeadSequenceX[elfPausedFrame] + 31, -elfPausedHeadSequenceY[elfPausedFrame] + 43, elfPauseMouth, elfPausedMouthSequence[elfPausedFrame]);
+  sprites.drawPlusMask(51, pgm_read_byte(&elfPausedBodySequenceY[elfPausedFrame]), elfPauseBody_plus_mask, 0);
+  sprites.drawPlusMask(pgm_read_byte(&elfPausedHeadSequenceX[elfPausedFrame]), - pgm_read_byte(&elfPausedHeadSequenceY[elfPausedFrame]), elfPauseHead_plus_mask, 0);
+  sprites.drawPlusMask(pgm_read_byte(&elfPausedWandSequenceX[elfPausedFrame]), pgm_read_byte(&elfPausedWandSequenceY[elfPausedFrame]), elfPauseWand_plus_mask, 0);
+  sprites.drawErase(pgm_read_byte(&elfPausedHeadSequenceX[elfPausedFrame]) + 31, - pgm_read_byte(&elfPausedHeadSequenceY[elfPausedFrame]) + 43, elfPauseMouth, pgm_read_byte(&elfPausedMouthSequence[elfPausedFrame]));
 }
 
 void drawThumbsUpElf()
 {
-  sprites.drawSelfMasked(51, 0, elfThumbsUp, thumbsUpSequence[thumbsUpFrame]);
+  sprites.drawSelfMasked(51, 0, elfThumbsUp, pgm_read_byte(&thumbsUpSequence[thumbsUpFrame]));
 }
 
 void drawDitherBackground()
@@ -680,6 +684,22 @@ void drawDitherBackground()
     {
       sprites.drawSelfMasked(51 + x, 8 * y, elfBackground, 0);
     }
+  }
+}
+
+void drawSpeedUp()
+{
+  sprites.drawPlusMask(2, pgm_read_byte(&speedSequenceY[speedUpFrame]), speed_plus_mask, 0);
+  sprites.drawPlusMask(15, pgm_read_byte(&upSequenceY[speedUpFrame]), up_plus_mask, 0);
+}
+
+void updateSpeedUp()
+{
+  if (arduboy.everyXFrames(6)) speedUpFrame++;
+  if (speedUpFrame > 7)
+  {
+    speedUpFrame = 0;
+    showSpeedUp = false;
   }
 }
 
@@ -698,7 +718,7 @@ void updateStage()
       if (thumbsUpFrame > 7)
       {
         thumbsUpFrame = 0;
-        //showCombo = false;
+        showCombo = false;
       }
       drawThumbsUpElf();
       break;
@@ -734,19 +754,32 @@ void updateStage()
 
   arduboy.fillRect(53, 52, 47, 9, WHITE);
   scoreDraw(57, 54);
+
+  if (showSpeedUp)
+  {
+    drawSpeedUp();
+    updateSpeedUp();
+  }
 }
 
 void testSpeed()
 {
-  if (scorePlayer < 2500) gameSpeed = 60;
-  else if (scorePlayer < 5000) gameSpeed = 50;
-  else if (scorePlayer < 7500) gameSpeed = 40;
-  else if (scorePlayer < 10000) gameSpeed = 30;
-  else if (scorePlayer < 25000) gameSpeed = 20;
-  else if (scorePlayer < 50000) gameSpeed = 15;
-  else if (scorePlayer < 100000) gameSpeed = 10;
-  else gameSpeed = 2;
+  if (scorePlayer < 2500) currentSpeed = SPEED_STATE_START;
+  else if (scorePlayer < 5000) currentSpeed = SPEED_STATE_ONE;
+  else if (scorePlayer < 7500) currentSpeed = SPEED_STATE_TWO;
+  else if (scorePlayer < 10000) currentSpeed = SPEED_STATE_THREE;
+  else if (scorePlayer < 25000) currentSpeed = SPEED_STATE_FOUR;
+  else if (scorePlayer < 50000) currentSpeed = SPEED_STATE_FIVE;
+  else if (scorePlayer < 100000) currentSpeed = SPEED_STATE_SIX;
+  else currentSpeed = SPEED_STATE_SEVEN;
+
+  if (previousSpeed != currentSpeed)
+  {
+    showSpeedUp = true;
+    previousSpeed = currentSpeed;
+  }
 }
+
 
 void deletePossibleBlobs()
 {
