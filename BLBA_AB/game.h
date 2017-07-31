@@ -18,6 +18,8 @@ void stateMenuPlay()
   canMoveBlobsDown = true;
   showCombo = false;
   showSpeedUp = false;
+  showNod = false;
+  showPop = false;
   currentSpeed = SPEED_STATE_START;
   previousSpeed = currentSpeed;
   chain = 0;
@@ -25,6 +27,7 @@ void stateMenuPlay()
   elfStressedFrame = 0;
   elfPausedFrame = 0;
   thumbsUpFrame = 0;
+  nodFrame = 0;
   gameState = STATE_GAME_PLAYING;
 };
 

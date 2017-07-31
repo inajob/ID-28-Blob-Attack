@@ -24,11 +24,14 @@
 #define ELF_THUMBSUP             1
 #define ELF_STRESSED             2
 #define ELF_PAUSED               3
+#define ELF_NOD                  4
 
 boolean giveExtraScore;
 boolean canMoveBlobsDown;
 boolean showCombo;
 boolean showSpeedUp;
+boolean showNod;
+boolean showPop;
 byte elfState;
 
 unsigned long extraScoreForChain;
@@ -52,7 +55,9 @@ const unsigned char PROGMEM elfPausedWandSequenceX[] = {100, 100, 100, 100, 100,
 const unsigned char PROGMEM elfPausedWandSequenceY[] = { 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 2, 1, 1, 1, 1, 1, 1, 0, 1, 2, 3,};
 const unsigned char PROGMEM elfPausedMouthSequence[] = {0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 4, 3, 2, 2, 5};
 
-const unsigned char PROGMEM thumbsUpSequence[] = {0, 1, 2, 3, 3, 3, 3, 3};
+const unsigned char PROGMEM thumbsUpSequence[] = {0, 0, 0, 1, 2, 3, 3, 3, 3, 3};
+const unsigned char PROGMEM nodSequence[] = {0, 0, 0, 1, 2, 3 };
+const unsigned char PROGMEM popSequence[] = {0, 1, 2, 3 };
 
 const unsigned char PROGMEM elfNormalEyesSequence[] = {0, 1, 2, 3, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
 
@@ -64,6 +69,8 @@ byte elfPausedFrame;
 byte elfNormalFrame;
 byte thumbsUpFrame;
 byte speedUpFrame;
+byte nodFrame;
+byte popFrame;
 byte chain;
 int currentBlobs[] =
 {
@@ -99,6 +106,7 @@ void removeFlag()
     }
   }
 }
+
 
 boolean isTileFree(int array_x, int array_y)
 {
@@ -252,30 +260,34 @@ void moveBlobsDown()
 
 void removeGroups()
 {
-  for (int x = 0; x < PLAYFIELD_WIDTH; x++)
+  if (!showPop)
   {
-    for (int y = 0; y < PLAYFIELD_HEIGHT; y++)
+    for (int x = 0; x < PLAYFIELD_WIDTH; x++)
     {
-      if (fieldFlags[x][y] == FLAG_ON_FIELD)
+      for (int y = 0; y < PLAYFIELD_HEIGHT; y++)
       {
-        giveExtraScore = true;
-        field[x][y] = BLOB_FREE;
-        scorePlayer += 50;
+        if (fieldFlags[x][y] == FLAG_ON_FIELD)
+        {
+          giveExtraScore = true;
+          field[x][y] = BLOB_FREE;
+          scorePlayer += 50;
+        }
       }
     }
+    if (giveExtraScore == true)
+    {
+      scorePlayer += extraScoreForChain;
+      extraScoreForChain += 500;
+      chain++;
+      showNod = true;
+      if (chain > 1) showCombo = true;
+      sound.tone(440, 100);
+      delay(100);
+      sound.tone(1047, 200);
+    }
+    giveExtraScore = false;
+    removeFlag();
   }
-  if (giveExtraScore == true)
-  {
-    scorePlayer += extraScoreForChain;
-    extraScoreForChain += 500;
-    chain++;
-    if (chain > 1) showCombo = true;
-    sound.tone(440, 100);
-    delay(100);
-    sound.tone(1047, 200);
-  }
-  giveExtraScore = false;
-  removeFlag();
 }
 
 
@@ -295,6 +307,7 @@ void fourInPack()
           fieldFlags[column][row - 1] = FLAG_ON_FIELD;
           fieldFlags[column + 1][row] = FLAG_ON_FIELD;
           fieldFlags[column + 1][row - 1] = FLAG_ON_FIELD;
+          showPop = true;
         }
         if (rightIsSameBlob(column, row) && aboveIsSameBlob(column + 1, row) && rightIsSameBlob(column + 1, row - 1))
         {
@@ -304,6 +317,7 @@ void fourInPack()
           fieldFlags[column + 1][row] = FLAG_ON_FIELD;
           fieldFlags[column + 1][row - 1] = FLAG_ON_FIELD;
           fieldFlags[column + 2][row - 1] = FLAG_ON_FIELD;
+          showPop = true;
         }
         if (rightIsSameBlob(column, row) && underIsSameBlob(column + 1, row) && rightIsSameBlob(column + 1, row + 1))
         {
@@ -313,6 +327,7 @@ void fourInPack()
           fieldFlags[column + 1][row] = FLAG_ON_FIELD;
           fieldFlags[column + 1][row + 1] = FLAG_ON_FIELD;
           fieldFlags[column + 2][row + 1] = FLAG_ON_FIELD;
+          showPop = true;
         }
         if (aboveIsSameBlob(column, row) && rightIsSameBlob(column, row - 1) && aboveIsSameBlob(column + 1, row - 1))
         {
@@ -323,6 +338,7 @@ void fourInPack()
           fieldFlags[column][row - 1] = FLAG_ON_FIELD;
           fieldFlags[column + 1][row - 1] = FLAG_ON_FIELD;
           fieldFlags[column + 1][row - 2] = FLAG_ON_FIELD;
+          showPop = true;
         }
         if (aboveIsSameBlob(column, row) && leftIsSameBlob(column, row - 1) && aboveIsSameBlob(column - 1, row - 1))
         {
@@ -333,6 +349,7 @@ void fourInPack()
           fieldFlags[column][row - 1] = FLAG_ON_FIELD;
           fieldFlags[column - 1][row - 1] = FLAG_ON_FIELD;
           fieldFlags[column - 1][row - 2] = FLAG_ON_FIELD;
+          showPop = true;
         }
       }
     }
@@ -364,6 +381,7 @@ void fourInColumn()
             fieldFlags[column][row - 1] = FLAG_ON_FIELD;
             fieldFlags[column][row - 2] = FLAG_ON_FIELD;
             fieldFlags[column][row - 3] = FLAG_ON_FIELD;
+            showPop = true;
           }
           for (byte temp = 0; temp < 3; temp++)
           {
@@ -376,6 +394,7 @@ void fourInColumn()
               fieldFlags[column][row - 1] = FLAG_ON_FIELD;
               fieldFlags[column][row - 2] = FLAG_ON_FIELD;
               fieldFlags[column + 1][row - temp] = FLAG_ON_FIELD;
+              showPop = true;
             }
           }
           for (byte temp = 0; temp < 3; temp++)
@@ -389,6 +408,7 @@ void fourInColumn()
               fieldFlags[column][row - 1] = FLAG_ON_FIELD;
               fieldFlags[column][row - 2] = FLAG_ON_FIELD;
               fieldFlags[column - 1][row - temp] = FLAG_ON_FIELD;
+              showPop = true;
             }
           }
         }
@@ -417,6 +437,7 @@ void fourInRow()
             fieldFlags[column + 1][row] = FLAG_ON_FIELD;
             fieldFlags[column + 2][row] = FLAG_ON_FIELD;
             fieldFlags[column + 3][row] = FLAG_ON_FIELD;
+            showPop = true;
           }
           for (byte temp = 0; temp < 3; temp++)
           {
@@ -428,6 +449,7 @@ void fourInRow()
               fieldFlags[column + 1][row] = FLAG_ON_FIELD;
               fieldFlags[column + 2][row] = FLAG_ON_FIELD;
               fieldFlags[column + temp][row - 1] = FLAG_ON_FIELD;
+              showPop = true;
             }
           }
           for (byte temp = 0; temp < 3; temp++)
@@ -440,6 +462,7 @@ void fourInRow()
               fieldFlags[column + 1][row] = FLAG_ON_FIELD;
               fieldFlags[column + 2][row] = FLAG_ON_FIELD;
               fieldFlags[column + temp][row + 1] = FLAG_ON_FIELD;
+              showPop = true;
             }
           }
         }
@@ -588,6 +611,7 @@ void checkIfBlobsAreGettingToHigh()
     if (field [array_x][4] == BLOB_FREE)
     {
       if (showCombo) elfState = ELF_THUMBSUP;
+      else if (showNod) elfState = ELF_NOD;
       else elfState = ELF_NORMAL;
     }
     else
@@ -676,6 +700,11 @@ void drawThumbsUpElf()
   sprites.drawSelfMasked(51, 0, elfThumbsUp, pgm_read_byte(&thumbsUpSequence[thumbsUpFrame]));
 }
 
+void drawNodElf()
+{
+  sprites.drawSelfMasked(51, 0, elfNod, pgm_read_byte(&nodSequence[nodFrame]));
+}
+
 void drawDitherBackground()
 {
   for (byte y = 0; y < 8; y++)
@@ -693,6 +722,39 @@ void drawSpeedUp()
   sprites.drawPlusMask(15, pgm_read_byte(&upSequenceY[speedUpFrame]), up_plus_mask, 0);
 }
 
+void drawPops()
+{
+  for (int x = 0; x < PLAYFIELD_WIDTH; x++)
+  {
+    for (int y = 0; y < PLAYFIELD_HEIGHT; y++)
+    {
+      if (fieldFlags[x][y] == FLAG_ON_FIELD)
+      {
+        sprites.drawPlusMask((x * BLOB_PIXELS) + PLAYFIELD_ZERO_X, (y * BLOB_PIXELS) + PLAYFIELD_ZERO_Y, blobPop_plus_mask, pgm_read_byte(&popSequence[popFrame]));
+      }
+    }
+  }
+}
+
+void updatePops()
+{
+  if (arduboy.everyXFrames(6)) popFrame++;
+  if (popFrame > 3)
+  {
+    popFrame = 0;
+    showPop = false;
+    while (canMoveBlobsDown)
+    {
+      removeGroups();
+      moveBlobsDown();
+      fourInPack();
+      fourInColumn();
+      fourInRow();
+    }
+    canMoveBlobsDown = true;
+  }
+}
+
 void updateSpeedUp()
 {
   if (arduboy.everyXFrames(6)) speedUpFrame++;
@@ -706,21 +768,24 @@ void updateSpeedUp()
 void updateStage()
 {
   if (gameState != STATE_GAME_PAUSE) checkIfBlobsAreGettingToHigh();
+  if (showNod) elfState = ELF_NOD;
   if (showCombo) elfState = ELF_THUMBSUP;
   if (arduboy.everyXFrames(20)) blobFrame = (++blobFrame) % 4;
+  if (arduboy.everyXFrames(6)) elfPausedFrame = (++elfPausedFrame) % 21;
   switch (elfState)
   {
     case ELF_NORMAL:
       drawNormalElf();
       break;
     case ELF_THUMBSUP:
+      drawThumbsUpElf();
       if (arduboy.everyXFrames(10)) thumbsUpFrame++;
-      if (thumbsUpFrame > 7)
+      if (thumbsUpFrame > 9)
       {
         thumbsUpFrame = 0;
         showCombo = false;
+        showNod = false;
       }
-      drawThumbsUpElf();
       break;
     case ELF_STRESSED:
       if (arduboy.everyXFrames(6))elfStressedFrame = (++elfStressedFrame) % 3;
@@ -728,27 +793,42 @@ void updateStage()
       drawStressedElf();
       break;
     case ELF_PAUSED:
-      if (arduboy.everyXFrames(6)) elfPausedFrame = (++elfPausedFrame) % 21;
       drawDitherBackground();
       drawPausedElf();
       break;
+    case ELF_NOD:
+      drawNodElf();
+      if (arduboy.everyXFrames(6)) nodFrame++;
+      if (nodFrame > 5)
+      {
+        nodFrame = 0;
+        showNod = false;
+        showCombo = false;
+      }
   }
   arduboy.drawRect(0, 0, 51, 64, WHITE);
   drawNextBlobs();
 
+
   switch (elfState)
   {
-    case ELF_NORMAL:
-    case ELF_STRESSED:
-    case ELF_THUMBSUP:
-      drawField();
-      drawCurrentBlobs();
-      drawNextAndWaitingBlobs();
-      break;
     case ELF_PAUSED:
       arduboy.fillRect(56, 4, 10, 22, WHITE);
       arduboy.fillRect(70, 10, 5, 11, WHITE);
       sprites.drawErase(56, 13, pause, 0);
+      break;
+    case ELF_NOD:
+    case ELF_NORMAL:
+    case ELF_STRESSED:
+    case ELF_THUMBSUP:
+      drawField();
+      if (showPop)
+      {
+        drawPops();
+        updatePops();
+      }
+      drawCurrentBlobs();
+      drawNextAndWaitingBlobs();
       break;
   }
 
@@ -764,10 +844,10 @@ void updateStage()
 
 void testSpeed()
 {
-  if (scorePlayer < 2500) currentSpeed = SPEED_STATE_START;
-  else if (scorePlayer < 5000) currentSpeed = SPEED_STATE_ONE;
-  else if (scorePlayer < 7500) currentSpeed = SPEED_STATE_TWO;
-  else if (scorePlayer < 10000) currentSpeed = SPEED_STATE_THREE;
+  if (scorePlayer < 5000) currentSpeed = SPEED_STATE_START;
+  else if (scorePlayer < 10000) currentSpeed = SPEED_STATE_ONE;
+  else if (scorePlayer < 15000) currentSpeed = SPEED_STATE_TWO;
+  else if (scorePlayer < 20000) currentSpeed = SPEED_STATE_THREE;
   else if (scorePlayer < 25000) currentSpeed = SPEED_STATE_FOUR;
   else if (scorePlayer < 50000) currentSpeed = SPEED_STATE_FIVE;
   else if (scorePlayer < 100000) currentSpeed = SPEED_STATE_SIX;
