@@ -644,7 +644,7 @@ void scoreDraw(int scoreX, int scoreY)
 
 void drawNormalElf()
 {
-  arduboy.drawCompressed(51, 0, elfNormal_compressed, WHITE);
+  sprites.drawSelfMasked(51, 0, elfNormal, 0);
   sprites.drawSelfMasked(79, 24, elfNormalEyes, pgm_read_byte(&elfNormalEyesSequence[elfPausedFrame]));
 }
 
@@ -663,7 +663,7 @@ void drawPausedElf()
   arduboy.drawCompressed(50, 3 + elfPausedBodySequenceY[elfPausedFrame], elfPauseBodyMask_compressed, WHITE);
   arduboy.drawCompressed(50, 3 + elfPausedBodySequenceY[elfPausedFrame], elfPauseBody_compressed, BLACK);
   arduboy.drawCompressed(elfPausedHeadSequenceX[elfPausedFrame], -elfPausedHeadSequenceY[elfPausedFrame], elfPauseHeadMask_compressed, WHITE);
-  arduboy.drawCompressed(elfPausedHeadSequenceX[elfPausedFrame], -elfPausedHeadSequenceY[elfPausedFrame], elfPauseHead_compressed, BLACK);
+  sprites.drawSelfMasked(elfPausedHeadSequenceX[elfPausedFrame], -elfPausedHeadSequenceY[elfPausedFrame], elfPauseHead, 0);
   arduboy.drawCompressed(elfPausedWandSequenceX[elfPausedFrame], elfPausedWandSequenceY[elfPausedFrame], elfPauseWandMask_compressed, WHITE);
   arduboy.drawCompressed(elfPausedWandSequenceX[elfPausedFrame], elfPausedWandSequenceY[elfPausedFrame], elfPauseWand_compressed, BLACK);
   sprites.drawErase(elfPausedHeadSequenceX[elfPausedFrame] + 31, -elfPausedHeadSequenceY[elfPausedFrame] + 43, elfPauseMouth, elfPausedMouthSequence[elfPausedFrame]);

@@ -55,7 +55,7 @@ void stateMenuHelp()
 void stateMenuInfo()
 {
   if (arduboy.everyXFrames(5)) sequenceFrame = (++sequenceFrame) % 8;
-  arduboy.drawCompressed(19, 27, madeBy_compressed, WHITE);
+  sprites.drawPlusMask(19, 27, madeBy, 0);
   sprites.drawSelfMasked(5, pgm_read_byte(&frameSequences[sequenceFrame + 16]), gameTitle, 0);
   if (arduboy.justPressed(A_BUTTON | B_BUTTON)) gameState = STATE_MENU_MAIN;
 }
