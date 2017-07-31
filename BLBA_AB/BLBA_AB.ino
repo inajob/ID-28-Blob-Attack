@@ -34,7 +34,9 @@ const FunctionPointer PROGMEM  mainGameLoop[] = {
 
 
 void setup() {
-  arduboy.begin();
+  arduboy.boot();                                           // begin with the boot logo en setting up the device to work
+  arduboy.audio.begin();
+  arduboy.bootLogoSpritesSelfMasked();
   arduboy.setFrameRate(60);                                 // set the frame rate of the game at 60 fps
   arduboy.initRandomSeed();
 }

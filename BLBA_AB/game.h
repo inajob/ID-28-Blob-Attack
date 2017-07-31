@@ -17,6 +17,8 @@ void stateMenuPlay()
   giveExtraScore = false;
   canMoveBlobsDown = true;
   showCombo = false;
+  showSpeedUp = false;
+  speedState = 
   chain = 0;
   elfState = ELF_NORMAL;
   elfStressedFrame = 0;

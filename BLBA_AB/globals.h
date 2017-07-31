@@ -7,17 +7,30 @@
 #include "bitmaps.h"
 
 //define menu states (on main menu)
-#define STATE_MENU_INTRO             0
-#define STATE_MENU_MAIN              1
-#define STATE_MENU_HELP              2
-#define STATE_MENU_PLAY              3
-#define STATE_MENU_INFO              4
-#define STATE_MENU_SOUNDFX           5
+#define STATE_MENU_INTRO              0
+#define STATE_MENU_MAIN               1
+#define STATE_MENU_HELP               2
+#define STATE_MENU_PLAY               3
+#define STATE_MENU_INFO               4
+#define STATE_MENU_SOUNDFX            5
 
 //define game states (on main menu)
-#define STATE_GAME_PLAYING           6
-#define STATE_GAME_PAUSE             7
-#define STATE_GAME_OVER              8
+#define STATE_GAME_PLAYING            6
+#define STATE_GAME_PAUSE              7
+#define STATE_GAME_OVER               8
+
+#define SPEED_STATE_START             60
+#define SPEED_STATE_ONE               55
+#define SPEED_STATE_TWO               50
+#define SPEED_STATE_THREE             45
+#define SPEED_STATE_FOUR              40
+#define SPEED_STATE_FIVE              30
+#define SPEED_STATE_SIX               20
+#define SPEED_STATE_SEVEN             10
+
+const unsigned char PROGMEM speedSequence[] = {SPEED_STATE_START, SPEED_STATE_ONE, SPEED_STATE_TWO, SPEED_STATE_THREE, SPEED_STATE_FOUR, SPEED_STATE_FIVE, SPEED_STATE_SIX, SPEED_STATE_SEVEN};
+
+
 
 Arduboy2Base arduboy;
 Sprites sprites;

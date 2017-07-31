@@ -28,7 +28,9 @@
 boolean giveExtraScore;
 boolean canMoveBlobsDown;
 boolean showCombo;
+boolean showSpeedUp;
 byte elfState;
+byte speedState;
 
 unsigned long extraScoreForChain;
 
@@ -50,6 +52,8 @@ byte elfPausedHeadSequenceY[] = { 4, 4, 4, 4, 4, 4, 4, 4, 3, 1, 0, 0, 0, 0, 0, 0
 byte elfPausedWandSequenceX[] = {100, 100, 100, 100, 100, 100, 100, 101, 100, 99, 98, 97, 97, 97, 97, 97, 97, 97, 97, 98, 99, 100,};
 byte elfPausedWandSequenceY[] = { 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 2, 1, 1, 1, 1, 1, 1, 0, 1, 2, 3,};
 byte elfPausedMouthSequence[] = {0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 4, 3, 2, 2, 5};
+
+byte thumbsUpSequence[] = {0, 1, 2, 3, 3, 3, 3, 3};
 
 const unsigned char PROGMEM elfNormalEyesSequence[] = {0, 1, 2, 3, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
 byte elfStressedFrame;
@@ -650,12 +654,9 @@ void drawNormalElf()
 
 void drawStressedElf()
 {
-  arduboy.drawCompressed(58, elfStressedBodySequenceY[elfStressedFrame], elfBodyMask_compressed, WHITE);
-  arduboy.drawCompressed(58, elfStressedBodySequenceY[elfStressedFrame], elfBody_compressed, BLACK);
-  arduboy.drawCompressed(61, - elfStressedHeadSequenceY[elfStressedFrame], elfHeadMask_compressed, WHITE);
-  arduboy.drawCompressed(61, - elfStressedHeadSequenceY[elfStressedFrame], elfHead_compressed, BLACK);
-  arduboy.drawCompressed(elfStressedWandSequenceX[elfStressedFrame], elfStressedWandSequenceY[elfStressedFrame], elfWandMask_compressed, WHITE);
-  arduboy.drawCompressed(elfStressedWandSequenceX[elfStressedFrame], elfStressedWandSequenceY[elfStressedFrame], elfWand_compressed, BLACK);
+  sprites.drawPlusMask(58, elfStressedBodySequenceY[elfStressedFrame], elfStressBody_plus_mask, 0);
+  sprites.drawPlusMask(61, - elfStressedHeadSequenceY[elfStressedFrame], elfStressHead_plus_mask, 0);
+  sprites.drawPlusMask(elfStressedWandSequenceX[elfStressedFrame], elfStressedWandSequenceY[elfStressedFrame], elfStressWand_plus_mask, 0);
 }
 
 void drawPausedElf()
@@ -668,8 +669,7 @@ void drawPausedElf()
 
 void drawThumbsUpElf()
 {
-  arduboy.drawCompressed(51, 0, thumbsUpMask_compressed, BLACK);
-  arduboy.drawCompressed(51, 0, thumbsUp_compressed[thumbsUpFrame], WHITE);
+  sprites.drawSelfMasked(51, 0, elfThumbsUp, thumbsUpSequence[thumbsUpFrame]);
 }
 
 void drawDitherBackground()
@@ -687,23 +687,23 @@ void updateStage()
 {
   if (gameState != STATE_GAME_PAUSE) checkIfBlobsAreGettingToHigh();
   if (showCombo) elfState = ELF_THUMBSUP;
-  if (arduboy.everyXFrames(6)) blobFrame = (++blobFrame) % 4;
+  if (arduboy.everyXFrames(20)) blobFrame = (++blobFrame) % 4;
   switch (elfState)
   {
     case ELF_NORMAL:
       drawNormalElf();
       break;
     case ELF_THUMBSUP:
-      if (arduboy.everyXFrames(3)) thumbsUpFrame++;
+      if (arduboy.everyXFrames(10)) thumbsUpFrame++;
       if (thumbsUpFrame > 7)
       {
         thumbsUpFrame = 0;
-        showCombo = false;
+        //showCombo = false;
       }
       drawThumbsUpElf();
       break;
     case ELF_STRESSED:
-      if (arduboy.everyXFrames(3))elfStressedFrame = (++elfStressedFrame) % 3;
+      if (arduboy.everyXFrames(6))elfStressedFrame = (++elfStressedFrame) % 3;
       drawDitherBackground();
       drawStressedElf();
       break;
@@ -738,15 +738,14 @@ void updateStage()
 
 void testSpeed()
 {
-  if (scorePlayer < 2500) gameSpeed = 30;
-  else if (scorePlayer < 5000) gameSpeed = 27;
-  else if (scorePlayer < 7500) gameSpeed = 24;
-  else if (scorePlayer < 10000) gameSpeed = 20;
-  else if (scorePlayer < 25000) gameSpeed = 15;
-  else if (scorePlayer < 50000) gameSpeed = 10;
-  else if (scorePlayer < 100000) gameSpeed = 5;
+  if (scorePlayer < 2500) gameSpeed = 60;
+  else if (scorePlayer < 5000) gameSpeed = 50;
+  else if (scorePlayer < 7500) gameSpeed = 40;
+  else if (scorePlayer < 10000) gameSpeed = 30;
+  else if (scorePlayer < 25000) gameSpeed = 20;
+  else if (scorePlayer < 50000) gameSpeed = 15;
+  else if (scorePlayer < 100000) gameSpeed = 10;
   else gameSpeed = 2;
-  Serial.println(gameSpeed);
 }
 
 void deletePossibleBlobs()
