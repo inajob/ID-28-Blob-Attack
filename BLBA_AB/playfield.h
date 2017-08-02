@@ -64,7 +64,7 @@ const unsigned char PROGMEM elfNormalEyesSequence[] = {0, 1, 2, 3, 4, 1, 0, 0, 0
 
 const unsigned char PROGMEM speedSequenceY[] = {0, 6, 12, 14, 16, 14, 16, 16};
 const unsigned char PROGMEM upSequenceY[] = {48, 42, 36, 34, 32, 34, 32, 32};
-const unsigned char PROGMEM chainSequenceY[] = {16, 16, 14, 16, 12, 6, 0};
+const unsigned char PROGMEM chainSequenceY[] = {32, 32, 32, 32, 34, 32, 16, 0};
 
 byte elfStressedFrame;
 byte elfPausedFrame;
@@ -726,7 +726,7 @@ void drawDitherBackground()
 void drawSpeedUp()
 {
   sprites.drawPlusMask(2, pgm_read_byte(&speedSequenceY[speedUpFrame]), speed_plus_mask, 0);
-  sprites.drawPlusMask(15, pgm_read_byte(&upSequenceY[speedUpFrame]), up_plus_mask, 0);
+  sprites.drawPlusMask(16, pgm_read_byte(&upSequenceY[speedUpFrame]), up_plus_mask, 0);
 }
 
 void drawPops()

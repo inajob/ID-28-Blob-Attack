@@ -66,9 +66,11 @@ void stateGameOver()
   drawDitherBackground();
   drawStressedElf();
   arduboy.drawRect(0, 0, 51, 64, WHITE);
-  sprites.drawSelfMasked(4, 16, youLose, 0);
-  arduboy.fillRect(4, 32, 43, 9, WHITE);
-  scoreDraw(6, 34);
+  
+  //sprites.drawSelfMasked(9, 10, you, 0);
+  sprites.drawSelfMasked(4, 12, youLose, 0);
+  arduboy.fillRect(4, 38, 43, 9, WHITE);
+  scoreDraw(6, 40);
   if (arduboy.justPressed(A_BUTTON | B_BUTTON))
   {
     gameState = STATE_MENU_MAIN;
