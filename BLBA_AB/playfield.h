@@ -32,6 +32,7 @@ boolean showCombo;
 boolean showSpeedUp;
 boolean showNod;
 boolean showPop;
+boolean showChain;
 byte elfState;
 
 unsigned long extraScoreForChain;
@@ -63,6 +64,7 @@ const unsigned char PROGMEM elfNormalEyesSequence[] = {0, 1, 2, 3, 4, 1, 0, 0, 0
 
 const unsigned char PROGMEM speedSequenceY[] = {0, 6, 12, 14, 16, 14, 16, 16};
 const unsigned char PROGMEM upSequenceY[] = {48, 42, 36, 34, 32, 34, 32, 32};
+const unsigned char PROGMEM chainSequenceY[] = {16, 16, 14, 16, 12, 6, 0};
 
 byte elfStressedFrame;
 byte elfPausedFrame;
@@ -72,6 +74,7 @@ byte speedUpFrame;
 byte nodFrame;
 byte popFrame;
 byte chain;
+byte chainFrame;
 int currentBlobs[] =
 {
   // array for current blob
@@ -280,7 +283,11 @@ void removeGroups()
       extraScoreForChain += 500;
       chain++;
       showNod = true;
-      if (chain > 1) showCombo = true;
+      if (chain > 1)
+      {
+        showChain = true;
+        showCombo = true;
+      }
       sound.tone(440, 100);
       delay(100);
       sound.tone(1047, 200);
@@ -736,6 +743,11 @@ void drawPops()
   }
 }
 
+void drawChain()
+{
+  sprites.drawPlusMask(2, pgm_read_byte(&chainSequenceY[chainFrame]), chain_plus_mask, 0);
+}
+
 void updatePops()
 {
   if (arduboy.everyXFrames(6)) popFrame++;
@@ -762,6 +774,16 @@ void updateSpeedUp()
   {
     speedUpFrame = 0;
     showSpeedUp = false;
+  }
+}
+
+void updateChain()
+{
+  if (arduboy.everyXFrames(6)) chainFrame++;
+  if (chainFrame > 7)
+  {
+    chainFrame = 0;
+    showChain = false;
   }
 }
 
@@ -839,6 +861,11 @@ void updateStage()
   {
     drawSpeedUp();
     updateSpeedUp();
+  }
+  if (showChain)
+  {
+    drawChain();
+    updateChain();
   }
 }
 

@@ -20,6 +20,7 @@ void stateMenuPlay()
   showSpeedUp = false;
   showNod = false;
   showPop = false;
+  showChain = false;
   currentSpeed = SPEED_STATE_START;
   previousSpeed = currentSpeed;
   chain = 0;
