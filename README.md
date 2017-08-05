@@ -1,5 +1,5 @@
 # Blob Attack
-![Image](http://www.team-arg.org/masterfiles/team-arg-blba/images/banner-ID-28c.png)
+![Image](http://www.team-arg.org/masterfiles/team-arg-blba/images/banner-ID-28.png)
 
 Blob Attack : http://www.team-arg.org/blba-manual.html  
 **Download latest Arduboy version and source :** https://github.com/TEAMarg/ID-28-Blob-Attack/releases/latest  
