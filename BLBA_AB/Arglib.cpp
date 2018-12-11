@@ -18,6 +18,8 @@ void Arduboy::start()
   pinMode(PIN_A_BUTTON, INPUT_PULLUP);
   pinMode(PIN_B_BUTTON, INPUT_PULLUP);
   //tunes.initChannel(PIN_SPEAKER_1);
+  pinMode(5, OUTPUT); // backlight
+  digitalWrite(5, HIGH);
 /*
 #ifdef AB_DEVKIT
   tunes.initChannel(PIN_SPEAKER_1); // use the same pin for both channels
@@ -69,6 +71,7 @@ void Arduboy::slowCPU()
 void Arduboy::bootLCD()
 {
   LCDCommandMode();
+  #if defined(ARDUBOY_10) || defined(AB_DEVKIT)
   SPI.transfer(0xAE);  // Display Off
   SPI.transfer(0XD5);  // Set Display Clock Divisor v
   SPI.transfer(0xF0);  //   0x80 is default
@@ -95,7 +98,47 @@ void Arduboy::bootLCD()
   SPI.transfer(0xA4);  // Entire Display ON
   SPI.transfer(0xA6);  // Set normal/inverse display
   SPI.transfer(0xAF);  // Display On
+  #endif
+  #ifdef MY_GAMEBUINO_1
+  SPI.transfer(0xe2);
+  SPI.transfer(0x40);
+  SPI.transfer(0xa0);
+  SPI.transfer(0xc8);
+  SPI.transfer(0xa6);
+  SPI.transfer(0xa2);
+  SPI.transfer(0x2f);
+  SPI.transfer(0xf8);
+  SPI.transfer(0x00);
+  SPI.transfer(0x23);
+  SPI.transfer(0x81);
+  SPI.transfer(0x30);
+  SPI.transfer(0xac);
+  SPI.transfer(0xa1);
+  SPI.transfer(0xc0);
+  SPI.transfer(0x00);
+  SPI.transfer(0xaf);
+  SPI.transfer(0xa5);
+  SPI.transfer(0xa4);
+  SPI.transfer(0xb0);
+  SPI.transfer(0x10);
+  #endif
+  #ifdef MY_GAMEBUINO_2
+  SPI.transfer(0xd5);
+  SPI.transfer(0xf0);
+  SPI.transfer(0x8d);
+  SPI.transfer(0x14);
+  SPI.transfer(0xa1);
+  SPI.transfer(0xc8);
+  SPI.transfer(0x81);
+  SPI.transfer(0xcf);
+  SPI.transfer(0xd9);
+  SPI.transfer(0xf1);
+  SPI.transfer(0xaf);
+  SPI.transfer(0x20);
+  SPI.transfer(0x00);
+  #endif
 
+  #if defined(ARDUBOY_10) || defined(AB_DEVKIT) || defined(MY_GAMEBUINO_2)
   LCDCommandMode();
   SPI.transfer(0x20);     // set display mode
   SPI.transfer(0x00);     // horizontal addressing mode
@@ -107,8 +150,24 @@ void Arduboy::bootLCD()
   SPI.transfer(0x22); // set page address
   SPI.transfer(0x00);
   SPI.transfer(PAGE_ADDRESS_END);
-
   LCDDataMode();
+  #endif
+  #ifdef MY_GAMEBUINO_1
+  uint8_t col, maxcol, p;
+  for(p = 0; p < 8; p ++){
+    LCDCommandMode();
+    SPI.transfer(0xb0 | p);
+    col = 0;
+    maxcol = 128 - 1; // WIDTH
+    SPI.transfer((col & 0x0f) | 0x10);
+    SPI.transfer((col >> 4) & 0x0f);
+    LCDDataMode();
+    for(; col <= maxcol + 4; col ++){
+      SPI.transfer(0x00);
+    }
+  }
+  #endif
+
 }
 
 // Safe Mode is engaged by holding down both the LEFT button and UP button
@@ -154,8 +213,12 @@ void Arduboy::saveMuchPower()
   power_twi_disable();
   // timer 0 is for millis()
   // timers 1 and 3 are for music and sounds
+  #if defined(MY_GAMEBUINO_1) || defined(MY_GAMEBUINO_2)
+  // timer2 use music and sounds
+  #else
   power_timer2_disable();
   power_usart1_disable();
+  #endif
   // we need USB, for now (to allow triggered reboots to reprogram)
   // power_usb_disable()
 }
@@ -234,7 +297,10 @@ uint16_t Arduboy::rawADC(byte adc_bits)
   ADMUX = adc_bits;
   // we also need MUX5 for temperature check
   if (adc_bits == ADC_TEMP) {
+    #if defined(MY_GAMEBUINO_1) || defined(MY_GAMEBUINO_2)
+    #else
     ADCSRB = _BV(MUX5);
+    #endif
   }
 
   delay(2); // Wait for ADMUX setting to settle
@@ -249,7 +315,25 @@ uint16_t Arduboy::rawADC(byte adc_bits)
 
 void Arduboy::blank()
 {
+
+  #if defined(ARDUBOY_10) || defined(AB_DEVKIT) || defined(MY_GAMEBUINO_2)
   for (int a = 0; a < (HEIGHT * WIDTH) / 8; a++) SPI.transfer(0x00);
+  #endif
+  #ifdef MY_GAMEBUINO_1
+  uint8_t col, maxcol, p;
+  for(p = 0; p < 8; p ++){
+    LCDCommandMode();
+    SPI.transfer(0xb0 | p);
+    col = 0;
+    maxcol = 128 - 1; // WIDTH
+    SPI.transfer((col & 0x0f) | 0x10);
+    SPI.transfer((col >> 4) & 0x0f);
+    LCDDataMode();
+    for(; col <= maxcol + 4; col ++){
+      SPI.transfer(0x00);
+    }
+  }
+  #endif
 }
 
 void Arduboy::clearDisplay()
@@ -773,18 +857,52 @@ void Arduboy::display()
 
 void Arduboy::drawScreen(const unsigned char *image)
 {
+  #if defined(ARDUBOY_10) || defined(AB_DEVKIT) || defined(MY_GAMEBUINO_2)
   for (int a = 0; a < (HEIGHT * WIDTH) / 8; a++)
   {
     SPI.transfer(pgm_read_byte(image + a));
   }
+  #endif
+  #ifdef MY_GAMEBUINO_1
+  uint8_t col, maxcol, p;
+  for(p = 0; p < 8; p ++){
+    LCDCommandMode();
+    SPI.transfer(0xb0 | p);
+    col = 0;
+    maxcol = 128 - 1; // WIDTH
+    SPI.transfer((col & 0x0f) | 0x10);
+    SPI.transfer((col >> 4) & 0x0f);
+    LCDDataMode();
+    for(; col <= maxcol + 4; col ++){
+      SPI.transfer(pgm_read_byte(image + col + (p << 3)));
+    }
+  }
+  #endif
 }
 
 void Arduboy::drawScreen(unsigned char image[])
 {
+  #if defined(ARDUBOY_10) || defined(AB_DEVKIT) || defined(MY_GAMEBUINO_2)
   for (int a = 0; a < (HEIGHT * WIDTH) / 8; a++)
   {
     SPI.transfer(image[a]);
   }
+  #endif
+  #ifdef MY_GAMEBUINO_1
+  uint8_t col, maxcol, p;
+  for(p = 0; p < 8; p ++){
+    LCDCommandMode();
+    SPI.transfer(0xb0 | p);
+    col = 0;
+    maxcol = 128 - 1; // WIDTH
+    SPI.transfer((col & 0x0f) | 0x10);
+    SPI.transfer((col >> 4) & 0x0f);
+    LCDDataMode();
+    for(; col <= maxcol + 4; col ++){
+      SPI.transfer(image[col + (p * (maxcol + 1))]);
+    }
+  }
+  #endif
 }
 
 unsigned char* Arduboy::getBuffer() {
@@ -847,13 +965,19 @@ uint8_t Arduboy::getInput()
   buttons = buttons | (((~PINC) & B01000000) >> 4);
   // A and B
   buttons = buttons | (((~PINF) & B11000000) >> 6);
-#else
+#endif
+#ifdef ARDUBOY_10
   // down, up, left right
   buttons = ((~PINF) & B11110000);
   // A (left)
   buttons = buttons | (((~PINE) & B01000000) >> 3);
   // B (right)
   buttons = buttons | (((~PINB) & B00010000) >> 2);
+#endif
+#if defined(MY_GAMEBUINO_1) || defined(MY_GAMEBUINO_2)
+  buttons = ((~PIND) & B11010100); // 7(up), 6(right), 4(a), 2(b)
+  buttons = buttons | ((~PINB) & B00000011); // 1(left), 0(down)
+  buttons = buttons | ((~PINC) & B00001000); // 3(c)
 #endif
 
   // b0dlu0rab - see button defines in Arduboy.h
@@ -871,7 +995,10 @@ void Arduboy::swap(int16_t& a, int16_t& b) {
 
 void ArduboyAudio::on() {
   pinMode(PIN_SPEAKER_1, OUTPUT);
+  #if defined(MY_GAMEBUINO_1) || defined(MY_GAMEBUINO_2)
+  #else
   pinMode(PIN_SPEAKER_2, OUTPUT);
+  #endif
   audio_enabled = true;
 }
 
@@ -881,7 +1008,10 @@ bool ArduboyAudio::enabled() {
 
 void ArduboyAudio::off() {
   pinMode(PIN_SPEAKER_1, INPUT);
+  #if defined(MY_GAMEBUINO_1) || defined(MY_GAMEBUINO_2)
+  #else
   pinMode(PIN_SPEAKER_2, INPUT);
+  #endif
   audio_enabled = false;
 }
 

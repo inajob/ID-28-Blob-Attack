@@ -25,7 +25,9 @@
        // #define ARDUBOY_10
        #define AB_DEVKIT
 */
-#define ARDUBOY_10   //< compile for the production Arduboy v1.0
+//#define MY_GAMEBUINO_1 // compile for the my gamebuino clone
+//#define MY_GAMEBUINO_2 // compile for the my gamebuino clone
+//#define ARDUBOY_10   //< compile for the production Arduboy v1.0
 //#define AB_DEVKIT    //< compile for the official dev kit
 #endif
 
@@ -46,14 +48,27 @@
 #define CS 6
 #define DC 4
 #define RST 12
-#else
+#endif
+#ifdef ARDUBOY_10
 #define CS 12
 #define DC 4
 #define RST 6
 #endif
+#if defined(MY_GAMEBUINO_1) || defined(MY_GAMEBUINO_2)
+#define CS 15
+#define DC 16
+#define RST 14
+#endif
+
+
 
 // compare Vcc to 1.1 bandgap
-#define ADC_VOLTAGE _BV(REFS0) | _BV(MUX4) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1)
+#if defined(MY_GAMEBUINO_1) || defined(MY_GAMEBUINO_2)
+#define ADC_VOLTAGE (_BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1))
+#else
+#define ADC_VOLTAGE (_BV(REFS0) | _BV(MUX4) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1))
+#endif
+
 // compare temperature to 2.5 internal reference
 // also _BV(MUX5)
 #define ADC_TEMP _BV(REFS0) | _BV(REFS1) | _BV(MUX2) | _BV(MUX1) | _BV(MUX0)
@@ -79,7 +94,8 @@
 // be dangerous and fry your hardware (because of the devkit wiring).
 //
 // Reference: https://github.com/Arduboy/Arduboy/issues/108
-#else
+#endif
+#ifdef ARDUBOY_10
 #define LEFT_BUTTON _BV(5)
 #define RIGHT_BUTTON _BV(6)
 #define UP_BUTTON _BV(7)
@@ -96,6 +112,25 @@
 
 #define PIN_SPEAKER_1 5
 #define PIN_SPEAKER_2 13
+#endif
+#if defined(MY_GAMEBUINO_1) || defined(MY_GAMEBUINO_2)
+#define LEFT_BUTTON _BV(1)
+#define RIGHT_BUTTON _BV(6)
+#define UP_BUTTON _BV(7)
+#define DOWN_BUTTON _BV(0)
+#define A_BUTTON _BV(4)
+#define B_BUTTON _BV(2)
+
+#define PIN_LEFT_BUTTON 9
+#define PIN_RIGHT_BUTTON 6
+#define PIN_UP_BUTTON 7
+#define PIN_DOWN_BUTTON 8
+#define PIN_A_BUTTON 4
+#define PIN_B_BUTTON 2
+
+#define PIN_SPEAKER_1 3
+//#define PIN_SPEAKER_2 13
+
 #endif
 
 #define WIDTH 128
